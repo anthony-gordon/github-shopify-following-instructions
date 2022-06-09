@@ -1,9 +1,14 @@
 {% capture email_title %}Order Confirmation{% endcapture %}
+
 {% assign replacement_toggle = false %}
+
 {% for line in line_items %}
 {% assign item_title = line.title | downcase %}
-{% if item_title contains "replacement" %}{% assign replacement_toggle = true %}{% endif %}
+{% if item_title contains "replacement" %}
+{% assign replacement_toggle = true %}
+{% endif %}
 {% endfor %}
+
 {% if replacement_toggle %}
 {% capture email_body %}
 Dear {{customer.name}}, <br /><br />
@@ -19,9 +24,7 @@ Keisha<br>
 Head of Customer Support,
 Branch<br>
 {% endcapture %}
-
 {% else %}
-
 {% capture email_body %}
 Dear {{customer.name}}, <br /><br />
 Welcome to a better way to work! We're happy to let you know that your order is being processed.
@@ -35,7 +38,6 @@ You can confirm your estimated shipping timeline by checking our product pages o
 Kind regards, <br />
 Branch Customer Support Team
 {% endcapture %}
-
 {% endif %}
 
 <!DOCTYPE html>
@@ -166,89 +168,92 @@ Branch Customer Support Team
                                                                                                                 {%- endfor -%}
 
                                                                                                                 {% unless messageCreated %}
-
-                                                                                                                    {% assign currentDate = 'now' | date: "%s" %}
-
-                                                                                                                    {% if line.variant.metafields.variant.date_available %}
-                                                                                                                        {% assign availableDate = line.variant.metafields.variant.date_available | date: '%s' %}
+                                                                                                                    {% if line.variant.metafields.variant.shipping %}
+                                                                                                                        {% assign message = line.variant.metafields.variant.shipping %}
                                                                                                                     {% else %}
-                                                                                                                        {% assign availableDate = 'now' | date: "%s"  %}
-                                                                                                                    {% endif %}
+                                                                                                                        {% assign currentDate = 'now' | date: "%s" %}
 
-                                                                                                                    {% if line.product.tags contains 'b2b' %}
-                                                                                                                        {% assign b2b_product = true %}
-                                                                                                                    {% else %}
-                                                                                                                        {% assign b2b_product = false %}
-                                                                                                                    {% endif %}
-
-                                                                                                                    {% if availableDate != currentDate %}
-                                                                                                                        {% assign dateDifference = availableDate | minus: currentDate | divided_by: 86400 %}
-                                                                                                                    {% else %}
-                                                                                                                        {% assign dateDifference = 0 %}
-                                                                                                                    {% endif %}
-
-                                                                                                                    {% if line.variant.metafields.variant.processing_time %}
-                                                                                                                        {% assign processingTimeDifference =  line.variant.metafields.variant.processing_time | times: 1 %}
-                                                                                                                    {% else %}
-                                                                                                                        {% assign processingTimeDifference = 14 %}
-                                                                                                                    {% endif %}
-
-                                                                                                                    {% if dateDifference > processingTimeDifference %}
-                                                                                                                        {% assign daysUntilAvailable = dateDifference %}
-                                                                                                                    {% else %}
-                                                                                                                        {% assign daysUntilAvailable = processingTimeDifference %}
-                                                                                                                    {% endif %}
-
-                                                                                                                    {% assign weeksUntilAvailable = processingTimeDifference | divided_by: 7 | ceil %}
-
-                                                                                                                    {% if processingTimeDifference > dateDifference %}
-                                                                                                                        {% if b2b_product == true %}
-                                                                                                                            {% if weeksUntilAvailable > 1 %}
-                                                                                                                                {%- assign weeksPlusOne = weeksUntilAvailable | plus: 1 %}
-                                                                                                                                {%- assign weeksMinusOne = weeksUntilAvailable | minus: 1 %}
-                                                                                                                                {%- assign message = "Ships with white glove installation in " | append: weeksMinusOne | append: "-" | append: weeksPlusOne | append: " weeks" %}
-                                                                                                                            {% else %}
-                                                                                                                                {%- assign message = "Ships with white glove installation in 1-2 weeks" %}
-                                                                                                                            {% endif %}
+                                                                                                                        {% if line.variant.metafields.variant.date_available %}
+                                                                                                                            {% assign availableDate = line.variant.metafields.variant.date_available | date: '%s' %}
                                                                                                                         {% else %}
-                                                                                                                            {% if daysUntilAvailable > 1 %}
-                                                                                                                                {%- assign daysPlusOne = daysUntilAvailable | plus: 1 %}
-                                                                                                                                {%- assign daysMinusOne = daysUntilAvailable | minus: 1 %}
-                                                                                                                                {%- assign message = "Ships for free in " | append: daysMinusOne | append: "-" | append: daysPlusOne | append: " business days" %}
-                                                                                                                            {% else %}
-                                                                                                                                {%- assign message = "Ships for free in 1-2 business  days" %}
-                                                                                                                            {% endif %}
+                                                                                                                            {% assign availableDate = 'now' | date: "%s"  %}
                                                                                                                         {% endif %}
-                                                                                                                    {% else %}
-                                                                                                                        {% assign months = "January,February,March,April,May,June,July,August,September,October,November,December" | split: "," %}
-                                                                                                                        {% assign nthArray = "st,nd,rd,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th" | split: "," %}
+
+                                                                                                                        {% if line.product.tags contains 'b2b' %}
+                                                                                                                            {% assign b2b_product = true %}
+                                                                                                                        {% else %}
+                                                                                                                            {% assign b2b_product = false %}
+                                                                                                                        {% endif %}
 
                                                                                                                         {% if availableDate != currentDate %}
-                                                                                                                            {% assign dayOfWeek = availableDate | date: '%w' %}
+                                                                                                                            {% assign dateDifference = availableDate | minus: currentDate | divided_by: 86400 %}
                                                                                                                         {% else %}
-                                                                                                                            {% assign dayOfWeek = 'now' | date: '%w' %}
+                                                                                                                            {% assign dateDifference = 0 %}
                                                                                                                         {% endif %}
 
-                                                                                                                        {% assign daysUntilNextMonday = 7 | minus: dayOfWeek | modulo: 7 | plus: 1 | modulo: 7 %}
-                                                                                                                        {% assign secondsUntilNextMonday = daysUntilNextMonday | times: 24 | times: 60 | times: 60 %}
-                                                                                                                        {% assign nextMondayDay = availableDate | date: "%s" | plus: secondsUntilNextMonday | date: "%d" | times: 1 %}
-                                                                                                                        {% assign nextMondayMonthIndex = availableDate | date: "%s" | plus: secondsUntilNextMonday | date: "%m" | minus: 1  %}
-                                                                                                                        {% assign nth = nthArray[nextMondayDay] %}
-                                                                                                                        {% assign month = months[nextMondayMonthIndex] %}
-
-                                                                                                                        {% if b2b_product == true %}
-                                                                                                                            {% assign message = "Ships with white glove installation the week of " | append: month  | append: “ “ | append: nextMondayDay | append: nth    %}
+                                                                                                                        {% if line.variant.metafields.variant.processing_time %}
+                                                                                                                            {% assign processingTimeDifference =  line.variant.metafields.variant.processing_time | times: 1 %}
                                                                                                                         {% else %}
-                                                                                                                            {% assign message = "Ships for free the week of " | append: month  | append: “ “ | append: nextMondayDay | append: nth  %}
+                                                                                                                            {% assign processingTimeDifference = 14 %}
+                                                                                                                        {% endif %}
+
+                                                                                                                        {% if dateDifference > processingTimeDifference %}
+                                                                                                                            {% assign daysUntilAvailable = dateDifference %}
+                                                                                                                        {% else %}
+                                                                                                                            {% assign daysUntilAvailable = processingTimeDifference %}
+                                                                                                                        {% endif %}
+
+                                                                                                                        {% assign weeksUntilAvailable = processingTimeDifference | divided_by: 7 | ceil %}
+
+                                                                                                                        {% if processingTimeDifference > dateDifference %}
+                                                                                                                            {% if b2b_product == true %}
+                                                                                                                                {% if weeksUntilAvailable > 1 %}
+                                                                                                                                    {%- assign weeksPlusOne = weeksUntilAvailable | plus: 1 %}
+                                                                                                                                    {%- assign weeksMinusOne = weeksUntilAvailable | minus: 1 %}
+                                                                                                                                    {%- assign message = "Ships with white glove installation in " | append: weeksMinusOne | append: "-" | append: weeksPlusOne | append: " weeks" %}
+                                                                                                                                {% else %}
+                                                                                                                                    {%- assign message = "Ships with white glove installation in 1-2 weeks" %}
+                                                                                                                                {% endif %}
+                                                                                                                            {% else %}
+                                                                                                                                {% if daysUntilAvailable > 1 %}
+                                                                                                                                    {%- assign daysPlusOne = daysUntilAvailable | plus: 1 %}
+                                                                                                                                    {%- assign daysMinusOne = daysUntilAvailable | minus: 1 %}
+                                                                                                                                    {%- assign message = "Ships for free in " | append: daysMinusOne | append: "-" | append: daysPlusOne | append: " business days" %}
+                                                                                                                                {% else %}
+                                                                                                                                    {%- assign message = "Ships for free in 1-2 business  days" %}
+                                                                                                                                {% endif %}
+                                                                                                                            {% endif %}
+                                                                                                                        {% else %}
+                                                                                                                            {% assign months = "January,February,March,April,May,June,July,August,September,October,November,December" | split: "," %}
+                                                                                                                            {% assign nthArray = "st,nd,rd,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th" | split: "," %}
+
+                                                                                                                            {% if availableDate != currentDate %}
+                                                                                                                                {% assign dayOfWeek = availableDate | date: '%w' %}
+                                                                                                                            {% else %}
+                                                                                                                                {% assign dayOfWeek = 'now' | date: '%w' %}
+                                                                                                                            {% endif %}
+
+                                                                                                                            {% assign daysUntilNextMonday = 7 | minus: dayOfWeek | modulo: 7 | plus: 1 | modulo: 7 %}
+                                                                                                                            {% assign secondsUntilNextMonday = daysUntilNextMonday | times: 24 | times: 60 | times: 60 %}
+                                                                                                                            {% assign nextMondayDay = availableDate | date: "%s" | plus: secondsUntilNextMonday | date: "%d" | times: 1 %}
+                                                                                                                            {% assign nextMondayMonthIndex = availableDate | date: "%s" | plus: secondsUntilNextMonday | date: "%m" | minus: 1  %}
+                                                                                                                            {% assign nth = nthArray[nextMondayDay] %}
+                                                                                                                            {% assign month = months[nextMondayMonthIndex] %}
+
+                                                                                                                            {% if b2b_product == true %}
+                                                                                                                                {% assign message = "Ships with white glove installation the week of " | append: month  | append: "&nbsp;" | append: nextMondayDay | append: nth    %}
+                                                                                                                            {% else %}
+                                                                                                                                {% assign message = "Ships for free the week of " | append: month  | append: "&nbsp;" | append: nextMondayDay | append: nth  %}
+                                                                                                                            {% endif %}
                                                                                                                         {% endif %}
                                                                                                                     {% endif %}
                                                                                                                 {% endunless %}
 
-                                                        <br/>
-                                                        <p>Shipping Timeline:
-                                                         <br/>
-                                                          <span style="color:#008000;">{{ message }}</span>
-                                                        </p>
+                                                                                                                <br/>
+                                                                                                                <p>Shipping Timeline:
+                                                                                                                    <br/>
+                                                                                                                    <span style="color:#008000;">{{ message }}</span>
+                                                                                                                </p>
                                                                                                             </td>
                                                                                                             <td style="vertical-align: middle" class="price">
                                                                                                                 {{ line.line_price | money }}

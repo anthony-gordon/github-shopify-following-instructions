@@ -113,11 +113,14 @@ $(function() {
 }
                      arrayVariantsOption0.push(target0.value);
                 targetIdOption0.push(target0.id);
-                 document.querySelector('.product-wrap .addons').style.display="block";
+                if(document.querySelector('.product-wrap .addons')){
+                  document.querySelector('.product-wrap .addons').style.display="block";
+                }
                 
                 if(target0.value == 'Light Blue'){
-                                 document.querySelector('.product-wrap .addons').style.display="none";
-
+                  if(document.querySelector('.product-wrap .addons')){
+                    document.querySelector('.product-wrap .addons').style.display="none";
+                  }
                 }
                     break;
             
@@ -145,10 +148,14 @@ $(function() {
 }
                      arrayVariantsOption1.push(target1.value);
                 targetIdOption1.push(target1.id);
+                if(document.querySelector('.product-wrap .addons')){
                  document.querySelector('.product-wrap .addons').style.display="block";
+                }
                 
                 if(target1.value == 'Light Blue'){
-                                 document.querySelector('.product-wrap .addons').style.display="none";
+                  if(document.querySelector('.product-wrap .addons')){
+                     document.querySelector('.product-wrap .addons').style.display="none";
+                  }
 
                 }
                     break;

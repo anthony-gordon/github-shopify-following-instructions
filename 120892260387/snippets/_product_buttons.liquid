@@ -171,17 +171,18 @@
   if (window.innerWidth < 900) {
     document.addEventListener("scroll", (event) => {
       var gorgiasBadge = document.querySelector("#gorgias-chat-container iframe#chat-button");
-      if (!isVisible(staticATC) && gorgiasBadge){
+      // if (!isVisible(staticATC) && gorgiasBadge){
+      if (gorgiasBadge){
         gorgiasBadge.style.marginBottom = "50px";
         gorgiasBadge.style.transition = "all .5s ease-in";
         stickyATC.classList.add("hlxn-sticky-show");
         stickyATC.classList.add("sticky-el-grow");
       } 
-      if (isVisible(staticATC)) {
-        gorgiasBadge.style.marginBottom = 0;
-        stickyATC.classList.remove("hlxn-sticky-show");
-        stickyATC.classList.remove("sticky-el-grow");
-      }
+      // if (isVisible(staticATC)) {
+      //   gorgiasBadge.style.marginBottom = 0;
+      //   stickyATC.classList.remove("hlxn-sticky-show");
+      //   stickyATC.classList.remove("sticky-el-grow");
+      // }
 
     }, {passive: true});
   }

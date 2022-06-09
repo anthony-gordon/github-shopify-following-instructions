@@ -12,7 +12,8 @@
 	{%- endif -%}
     {{- variant.id | append: '-processing_time' | json -}}: {{- variant.metafields.variant.processing_time | default: defaultProcessingTimeDifference  -}},
     {{- variant.id | append: '-date_available' | json -}}: {{- dateAvailable -}},
-    {{- variant.id | append: '-tags' | json -}}: `[{{- product.tags | join: ', ' | default: 'default'  -}}]`
+    {{- variant.id | append: '-tags' | json -}}: `[{{- product.tags | join: ', ' | default: 'default'  -}}]`,
+    {{- variant.id | append: '-override_message' | json -}}: `{{- variant.metafields.variant.shipping | default: "none"  -}}`
     {%- unless forloop.last -%},{%- endunless -%} 
   {% endfor %}
 {%- endcapture -%}
@@ -47,7 +48,7 @@
   };
 
 	window.Plus.product.generateDateProcessingObject = function(currentVariantID){
-    let dateProcessingObject = {"date": [], "processing_time": [], "b2b_product": false};
+    let dateProcessingObject = {"date": [], "processing_time": [], "b2b_product": false, "shipping_message_override": false};
       
     for (const [key, value] of Object.entries(window.Plus.product.dateProcessingData)) {
       if (key.includes(currentVariantID) && key.includes('date') ) {
@@ -59,57 +60,65 @@
       if (key.includes(currentVariantID) && key.includes('tags') && value.toLowerCase().includes(window.Plus.product.settings.plusB2BProductTag)) {
         dateProcessingObject.b2b_product = true;
     	}
+      if (key.includes(currentVariantID) && key.includes('override_message') && !value.toLowerCase().includes("none")) {
+        dateProcessingObject.shipping_message_override = `${value}`;
+    	}
     }
     return dateProcessingObject;
 	}
       
   window.Plus.product.generateShippingMessage = function(dateProcessingObject, variantAvailabilityDate, variantInventory){
-  let processingTimeDifference =  parseInt(dateProcessingObject.processing_time),
-    b2b_product = dateProcessingObject.b2b_product,
-    date = dateProcessingObject.date,
-    dateDifference = Math.round(parseInt((new Date(date) - new Date()) / (1000 * 3600 * 24))),
-    daysUntilAvailable = dateDifference > processingTimeDifference ? dateDifference : processingTimeDifference,
-    weeksUntilAvailable = Math.round(daysUntilAvailable / 7),
-    shippingProcessingMessage = '';
-    if(dateDifference > processingTimeDifference){
-      let nextMonday = new Date(date);
-      const monthNames = ["January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-      ];
+  let shippingProcessingMessage = '';
+  if (dateProcessingObject.shipping_message_override){
+    shippingProcessingMessage = dateProcessingObject.shipping_message_override;
+  } else {
+    let processingTimeDifference =  parseInt(dateProcessingObject.processing_time),
+      b2b_product = dateProcessingObject.b2b_product,
+      date = dateProcessingObject.date,
+      dateDifference = Math.round(parseInt((new Date(date) - new Date()) / (1000 * 3600 * 24))),
+      daysUntilAvailable = dateDifference > processingTimeDifference ? dateDifference : processingTimeDifference,
+      weeksUntilAvailable = Math.round(daysUntilAvailable / 7);
 
-      nextMonday.setDate(nextMonday.getDate() + ((7 - nextMonday.getDay()) % 7 + 1) % 7);
-      const nth = function(d) {
-        if (d > 3 && d < 21) return `${d}th`;
-        switch (d % 10) {
-          case 1:  return `${d}st`;
-          case 2:  return `${d}nd`;
-          case 3:  return `${d}rd`;
-          default: return `${d}th`;
+      if(dateDifference > processingTimeDifference){
+        let nextMonday = new Date(date);
+        const monthNames = ["January", "February", "March", "April", "May", "June",
+          "July", "August", "September", "October", "November", "December"
+        ];
+
+        nextMonday.setDate(nextMonday.getDate() + ((7 - nextMonday.getDay()) % 7 + 1) % 7);
+        const nth = function(d) {
+          if (d > 3 && d < 21) return `${d}th`;
+          switch (d % 10) {
+            case 1:  return `${d}st`;
+            case 2:  return `${d}nd`;
+            case 3:  return `${d}rd`;
+            default: return `${d}th`;
+          }
         }
-      }
-    
-      let dateAvailableDescription = `the week of ${monthNames[nextMonday.getMonth()]} ${nth(nextMonday.getDate())}`;
       
-      if (b2b_product){
-        message = window.Plus.product.settings.plusB2BDateAvailableMessage;
-        shippingProcessingMessage = message.replace(`#date_available_description#`, dateAvailableDescription);
+        let dateAvailableDescription = `the week of ${monthNames[nextMonday.getMonth()]} ${nth(nextMonday.getDate())}`;
+        
+        if (b2b_product){
+          message = window.Plus.product.settings.plusB2BDateAvailableMessage;
+          shippingProcessingMessage = message.replace(`#date_available_description#`, dateAvailableDescription);
+        } else {
+          message = window.Plus.product.settings.plusDTCDateAvailableMessage;
+          shippingProcessingMessage = message.replace(`#date_available_description#`, dateAvailableDescription);
+        }
       } else {
-        message = window.Plus.product.settings.plusDTCDateAvailableMessage;
-        shippingProcessingMessage = message.replace(`#date_available_description#`, dateAvailableDescription);
-      }
-    } else {
-      if (b2b_product){
-        let range = window.Plus.product.settings.plusB2BDefaultShippingRange;
-        let processingTimeDescription = `in ${weeksUntilAvailable > 1 && weeksUntilAvailable > range ? weeksUntilAvailable - range : 1}-${weeksUntilAvailable > 1 ? weeksUntilAvailable + range : 1 + (range * 2)} weeks`
-        message = window.Plus.product.settings.plusB2BProcessingTimeMessage;
-        shippingProcessingMessage = message.replace(`#processing_time_description#`, processingTimeDescription);
-      } else {
-        let range = window.Plus.product.settings.plusDTCDefaultShippingRange;
-        let processingTimeDescription = `in ${daysUntilAvailable > 1 && daysUntilAvailable > range  ? daysUntilAvailable - range : 1}-${daysUntilAvailable > 1 ? daysUntilAvailable + range : 1 + (range * 2)} business days`
-        message = window.Plus.product.settings.plusDTCProcessingTimeMessage;
-        shippingProcessingMessage = message.replace(`#processing_time_description#`, processingTimeDescription);
-      }
-    }  
+        if (b2b_product){
+          let range = window.Plus.product.settings.plusB2BDefaultShippingRange;
+          let processingTimeDescription = `in ${weeksUntilAvailable > 1 && weeksUntilAvailable > range ? weeksUntilAvailable - range : 1}-${weeksUntilAvailable > 1 ? weeksUntilAvailable + range : 1 + (range * 2)} weeks`
+          message = window.Plus.product.settings.plusB2BProcessingTimeMessage;
+          shippingProcessingMessage = message.replace(`#processing_time_description#`, processingTimeDescription);
+        } else {
+          let range = window.Plus.product.settings.plusDTCDefaultShippingRange;
+          let processingTimeDescription = `in ${daysUntilAvailable > 1 && daysUntilAvailable > range  ? daysUntilAvailable - range : 1}-${daysUntilAvailable > 1 ? daysUntilAvailable + range : 1 + (range * 2)} business days`
+          message = window.Plus.product.settings.plusDTCProcessingTimeMessage;
+          shippingProcessingMessage = message.replace(`#processing_time_description#`, processingTimeDescription);
+        }
+      }  
+    }
     return shippingProcessingMessage;
   }
       
@@ -121,6 +130,7 @@
       plusDefaultOOSMessage = window.Plus.product.settings.plusDefaultOOSMessage,
       plusShippingProcessingInput = document.querySelector('#plus-variant-shipping-processing-message'),
       html = `<span class="plus-shipping-message-message ${variantInventory ? 'plus-available' : 'plus-unavailable'}"><strong>${variantInventory ? "Available" : plusDefaultOOSMessage}</strong> | ${variantInventory ? shippingMessage : ''} ${link}</span>`;
+
     plusShippingMessage.innerHTML = html;
     plusShippingProcessingInput.value = shippingMessage;
   }

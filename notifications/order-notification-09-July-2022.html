@@ -1,0 +1,442 @@
+{% capture email_title %}Order Confirmation{% endcapture %}
+{% assign replacement_toggle = false %}
+{% for line in line_items %}
+{% assign item_title = line.title | downcase %}
+{% if item_title contains "replacement" %}{% assign replacement_toggle = true %}{% endif %}
+{% endfor %}
+{% if replacement_toggle %}
+{% capture email_body %}
+Dear {{customer.name}}, <br /><br />
+Keisha here - Head of Customer Support at Branch! First of all, I am so sorry to hear that your new Branch product is not functioning as it should.
+<br /><br>
+We founded Branch to make furnishing your office easy and we look forward to you getting back to your productive workday.<br>
+<br />
+We plan to ship your replacement within 5-7 business days so be sure to keep an eye out for an email with your tracking information.<br>
+<br />
+In the meantime, let us know if you have any questions about your replacement order as we'd love to help where we can!<br>
+<br />
+Keisha<br>
+Head of Customer Support,
+Branch<br>
+{% endcapture %}
+
+{% else %}
+
+{% capture email_body %}
+Dear {{customer.name}}, <br /><br />
+Welcome to a better way to work! We're happy to let you know that your order is being processed.
+<br /><br />
+You can confirm your estimated shipping timeline by checking our product pages or the shipping rate in this confirmation email. Requests for modifications to your order can't be guaranteed once it has been processed, but with that in mind, let us know if you need to make any changes and we will do our best to help.
+<br />
+<br /><b>Please be aware that processing times may be <a href="https://www.branchfurniture.com/pages/shipping" class="link" style="color:#314438">longer than anticipated</a> as we work hard to address multiple forces driving supply chain delays across the industry. Most orders will ship as estimated, and rest assured if your order is delayed, you'll receive a prompt notification via email.</b>
+<br />
+<br />Thanks for choosing Branch to improve your workday!<br />
+<br />
+Kind regards, <br />
+Branch Customer Support Team
+{% endcapture %}
+
+{% endif %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width">
+        <title>{{ email_title }}</title>
+        <style type="text/css">
+            @import url("https://fonts.googleapis.com/css?family=Frank+Ruhl+Libre:400,700&display=swap");
+            @font-face{font-display:swap;font-family:'Quicksand';font-weight:300;font-style:normal;src:url("https://fonts.shopifycdn.com/quicksand/quicksand_n3.aca7966d6f657db1e1860622aba1fbd70add25cf.woff2?h1=YnVyZWF1d29yay5jb20&h2=YnJhbmNoZnVybml0dXJlLmNvbQ&hmac=3edfecb74db746a9c3b617854708d68e6944b3457ebcf3c5f73f92218aea4106") format("woff2"),url("https://fonts.shopifycdn.com/quicksand/quicksand_n3.e7df9fd7fc3b24dcc474debbac6b1af89b65bf08.woff?h1=YnVyZWF1d29yay5jb20&h2=YnJhbmNoZnVybml0dXJlLmNvbQ&hmac=5cd77e03ce7da20bbfca602b2dcf1a2160fcaa6b380deba154c176651b1206c8") format("woff")}
+            @font-face{font-display:swap;font-family:'Quicksand';font-weight:400;font-style:normal;src:url("https://fonts.shopifycdn.com/quicksand/quicksand_n4.d095c6a3084955552d078cb5ddbfcacb66ded7c7.woff2?h1=YnVyZWF1d29yay5jb20&h2=YnJhbmNoZnVybml0dXJlLmNvbQ&hmac=b1a51f6a838ae6bf0d6d7a800de253bf033bf299a506f1ed715cb4958a8dea68") format("woff2"),url("https://fonts.shopifycdn.com/quicksand/quicksand_n4.fdcb207dc7752a043253c4181978b51d0ce29865.woff?h1=YnVyZWF1d29yay5jb20&h2=YnJhbmNoZnVybml0dXJlLmNvbQ&hmac=c6848b4cabd8cda88de6080cce0a1793eaf50eb2fde15e667edef89d181e85b2") format("woff")}
+            @font-face{font-display:swap;font-family:'Quicksand';font-weight:500;font-style:normal;src:url("https://fonts.shopifycdn.com/quicksand/quicksand_n5.abe6ceb49fad3d5860023778027e009981009ec5.woff2?h1=YnVyZWF1d29yay5jb20&h2=YnJhbmNoZnVybml0dXJlLmNvbQ&hmac=81a6b365f2eb253b3ad3ba5efcadff6350de6beafb4b3866a7cebaf7b1a848fd") format("woff2"),url("https://fonts.shopifycdn.com/quicksand/quicksand_n5.4d639807b4c4942f5ab2860d7424ecc88ffa7883.woff?h1=YnVyZWF1d29yay5jb20&h2=YnJhbmNoZnVybml0dXJlLmNvbQ&hmac=37c6854be7112c5c468160834018915620b85c05062b33c08b8b46ec455efeeb") format("woff")}
+            @font-face{font-display:swap;font-family:'Quicksand';font-weight:700;font-style:normal;src:url("https://fonts.shopifycdn.com/quicksand/quicksand_n7.814ad74da12e242768feb9a53e013a1b4a46d7b3.woff2?h1=YnVyZWF1d29yay5jb20&h2=YnJhbmNoZnVybml0dXJlLmNvbQ&hmac=dc02e48fd57c7e6ef167dbcdd1dedff38decc8a6f1e30faa6fef0606abda4e6a") format("woff2"),url("https://fonts.shopifycdn.com/quicksand/quicksand_n7.fe8d36c3dbce1c07d8230831c08195630ffab04d.woff?h1=YnVyZWF1d29yay5jb20&h2=YnJhbmNoZnVybml0dXJlLmNvbQ&hmac=664d809a5c116a85486165649f38758f5523cadd2a8111ee673b6abb21542a78") format("woff")}
+
+            body {width:100%; background: #FFFFFF; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; margin:0; padding:0;}
+            body, p, td, li, a, span {font-size: 14px; font-family:'Quicksand', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;}
+            img {outline:none; text-decoration:none; -ms-interpolation-mode: bicubic;}
+            a img {border:none;}
+            p {margin: 0; line-height: 24px;}
+            h1, h2 {font-family: 'Frank Ruhl Libre', serif; font-weight: 400;}
+            h2, h3 {text-transform: capitalize; margin: 0; margin-bottom: 10px; text-align: left; color: {{shop.email_accent_color}}; font-weight: 400;}
+            h2 {font-size: 22px; padding-bottom: 20px; margin-bottom: 20px; color: {{shop.email_accent_color}}; border-bottom: 1px solid {{shop.email_accent_color}}; text-align: center;}
+            h3, h4, h5, h6 {font-family:'Quicksand', sans-serif; font-size: 15px; font-weight: 700;}
+            table {color: #777;}
+            table td {border-collapse: collapse; color: {{shop.email_accent_color}};}
+            a, a:active, a:visited, a:link {text-decoration: none; color: {{shop.email_accent_color}};}
+            a.link {font-weight: bold; text-decoration: underline;}
+            .button {font-size: 15px; letter-spacing: 0.5px; font-weight: bold;}
+            .button, .button:hover, .button:active, .button:visited {color: #fff; text-decoration: none;}
+
+            .summary table {width: 100%;}
+            .summary > td {padding: 10px 0 0;}
+            .summary .items .item > td {padding: 30px 0 10px; border-bottom: 1px solid {{shop.email_accent_color}};}
+            .summary .items .item.first > td {padding-top: 0;}
+            .summary .items .item .info {vertical-align: top;}
+            .summary .items .item .info p {margin: 0;}
+            .summary .items .item .info .title {line-height: 18px; padding-right: 20px;}
+            .summary .items .item .info strong {font-size: inherit !important; font-weight: normal !important;}
+            .summary .items .item .price {vertical-align: top; font-weight: bold;}
+            .summary .subtotals, .summary .total {padding: 20px 10px;}
+            .summary .total {padding-top: 0;}
+            .summary .subtotals td, .summary .total td {padding: 5px 0;}
+            .summary .subtotal td {font-weight: bold; font-size: 15px; }
+            .summary .total td {font-weight: bold; font-size: 16px; padding-top: 15px; color: {{shop.email_accent_color}};}
+            .summary .price {text-align: right;}
+            .customer-info .cell {padding-top: 25px; vertical-align: top;}
+
+            .content-wrapper {padding: 10px 10px; }
+            .body-wrapper {padding: 15px 50px 0; }
+            @media (max-width: 450px) {
+                .content-wrapper {padding: 10px 0px !important; }
+            }
+        </style>
+    </head>
+    <body>
+        <table style="width: 100%;">
+            <tr>
+                <td class="content-wrapper" style="background-color: #FFFFFF;" cellpadding="0" cellspacing="0">
+                    <center>
+                        <table border="0" cellpadding="0" cellspacing="0" style="background-color: #ffffff; width: 100%; max-width: 600px; margin: auto; text-align: center;">
+                            <tr>
+                                <td>
+                                    <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                                        <tr>
+                                            <td align="center" style="padding-top: 25px;padding-bottom: 25px;background-color: #F3EEEA;">
+                                                <a href="{{shop.url}}">
+                                                    <!-- <img src="{{shop.email_logo_url}}" width="{{ shop.email_logo_width }}" /> -->
+                                                    <img src="https://cdn.shopify.com/s/files/1/0124/5662/4187/files/branch-logo_600x.png?v=156805021" width="124">
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="body-wrapper" style="text-align: center; padding-bottom: 50px">
+                                                <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                                                    <tr>
+                                                        <td style="padding-top: 40px; padding-bottom: 40px; text-align: center;">
+                                                            <h1 style="font-size: 26px; margin: 0 0 1em 0; color: {{shop.email_accent_color}}; ">
+                                                                {{ email_title }}
+                                                            </h1>
+                                                            <p style="text-align: left; font-size: 14px;">{{ email_body }}</p>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="summary">
+                                                        <td>
+                                                            <h2 style="font-size: 22px; margin-bottom: 0; border: 0;">Order Summary</h2>
+                                                            <table style="background-color: #F3EEEA;">
+                                                                <tr>
+                                                                    <td class="wrapper" style="padding: 10px;">
+                                                                        <table class="items">
+                                                                            {% for line in line_items %}
+                                                                                <tr class="item {% if forloop.first %}first{% endif %}">
+                                                                                    <td style="">
+                                                                                        <table>
+                                                                                            <tr>
+                                                                                                <td style="width: 30%; vertical-align: middle;">
+                                                                                                    {% if line.image %}
+                                                                                                        <img src="{{ line | img_url: 'compact_cropped' }}" align="left" width="100" height="100" />
+                                                                                                    {% endif %}
+                                                                                                </td>
+                                                                                                <td class="info" style="width: 70%; vertical-align: middle;">
+                                                                                                    <table>
+                                                                                                        <tr>
+                                                                                                            <td style="vertical-align: middle">
+                                                                                                                {% if line.product.title %}
+                                                                                                                    {% assign line_title = line.product.title %}
+                                                                                                                {% else %}
+                                                                                                                    {% assign line_title = line.title %}
+                                                                                                                {% endif %}
+                                                                                                                <p class="title"><b>{{ line.quantity }}x</b> {{ line_title }}</p>
+                                                                                                                {% unless line.variant.title == 'Default Title' %}
+                                                                                                                    <p class="details">
+                                                                                                                        {% assign options = line.variant.title | split: ' / ' %}
+                                                                                                                        {% for option in line.product.options %}
+                                                                                                                            {{ option }}: {{ options[forloop.index0] }}<br>
+                                                                                                                        {% endfor %}
+                                                                                                                    </p>
+                                                                                                                {% endunless %}
+
+                                                                                                                {% assign message = '' %}
+                                                                                                                {% assign messageCreated = false %}
+
+                                                                                                                {%- for p in line_item.properties -%}
+                                                                                                                    {%- if p.first == '_plus_shipping_processing_message' -%}
+                                                                                                                        {%- assign message = p.last -%}
+                                                                                                                        {% assign messageCreated = true %}
+                                                                                                                    {%- endif -%}
+                                                                                                                {%- endfor -%}
+
+                                                                                                                {% unless messageCreated %}
+
+                                                                                                                    {% assign currentDate = 'now' | date: "%s" %}
+
+                                                                                                                    {% if line.variant.metafields.variant.date_available %}
+                                                                                                                        {% assign availableDate = line.variant.metafields.variant.date_available | date: '%s' %}
+                                                                                                                    {% else %}
+                                                                                                                        {% assign availableDate = 'now' | date: "%s"  %}
+                                                                                                                    {% endif %}
+
+                                                                                                                    {% if line.product.tags contains 'b2b' %}
+                                                                                                                        {% assign b2b_product = true %}
+                                                                                                                    {% else %}
+                                                                                                                        {% assign b2b_product = false %}
+                                                                                                                    {% endif %}
+
+                                                                                                                    {% if availableDate != currentDate %}
+                                                                                                                        {% assign dateDifference = availableDate | minus: currentDate | divided_by: 86400 %}
+                                                                                                                    {% else %}
+                                                                                                                        {% assign dateDifference = 0 %}
+                                                                                                                    {% endif %}
+
+                                                                                                                    {% if line.variant.metafields.variant.processing_time %}
+                                                                                                                        {% assign processingTimeDifference =  line.variant.metafields.variant.processing_time | times: 1 %}
+                                                                                                                    {% else %}
+                                                                                                                        {% assign processingTimeDifference = 14 %}
+                                                                                                                    {% endif %}
+
+                                                                                                                    {% if dateDifference > processingTimeDifference %}
+                                                                                                                        {% assign daysUntilAvailable = dateDifference %}
+                                                                                                                    {% else %}
+                                                                                                                        {% assign daysUntilAvailable = processingTimeDifference %}
+                                                                                                                    {% endif %}
+
+                                                                                                                    {% assign weeksUntilAvailable = processingTimeDifference | divided_by: 7 | ceil %}
+
+                                                                                                                    {% if processingTimeDifference > dateDifference %}
+                                                                                                                        {% if b2b_product == true %}
+                                                                                                                            {% if weeksUntilAvailable > 1 %}
+                                                                                                                                {%- assign weeksPlusOne = weeksUntilAvailable | plus: 1 %}
+                                                                                                                                {%- assign weeksMinusOne = weeksUntilAvailable | minus: 1 %}
+                                                                                                                                {%- assign message = "Ships with white glove installation in " | append: weeksMinusOne | append: "-" | append: weeksPlusOne | append: " weeks" %}
+                                                                                                                            {% else %}
+                                                                                                                                {%- assign message = "Ships with white glove installation in 1-2 weeks" %}
+                                                                                                                            {% endif %}
+                                                                                                                        {% else %}
+                                                                                                                            {% if daysUntilAvailable > 1 %}
+                                                                                                                                {%- assign daysPlusOne = daysUntilAvailable | plus: 1 %}
+                                                                                                                                {%- assign daysMinusOne = daysUntilAvailable | minus: 1 %}
+                                                                                                                                {%- assign message = "Ships for free in " | append: daysMinusOne | append: "-" | append: daysPlusOne | append: " business days" %}
+                                                                                                                            {% else %}
+                                                                                                                                {%- assign message = "Ships for free in 1-2 business  days" %}
+                                                                                                                            {% endif %}
+                                                                                                                        {% endif %}
+                                                                                                                    {% else %}
+                                                                                                                        {% assign months = "January,February,March,April,May,June,July,August,September,October,November,December" | split: "," %}
+                                                                                                                        {% assign nthArray = "st,nd,rd,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th,th" | split: "," %}
+
+                                                                                                                        {% if availableDate != currentDate %}
+                                                                                                                            {% assign dayOfWeek = availableDate | date: '%w' %}
+                                                                                                                        {% else %}
+                                                                                                                            {% assign dayOfWeek = 'now' | date: '%w' %}
+                                                                                                                        {% endif %}
+
+                                                                                                                        {% assign daysUntilNextMonday = 7 | minus: dayOfWeek | modulo: 7 | plus: 1 | modulo: 7 %}
+                                                                                                                        {% assign secondsUntilNextMonday = daysUntilNextMonday | times: 24 | times: 60 | times: 60 %}
+                                                                                                                        {% assign nextMondayDay = availableDate | date: "%s" | plus: secondsUntilNextMonday | date: "%d" | times: 1 %}
+                                                                                                                        {% assign nextMondayMonthIndex = availableDate | date: "%s" | plus: secondsUntilNextMonday | date: "%m" | minus: 1  %}
+                                                                                                                        {% assign nth = nthArray[nextMondayDay] %}
+                                                                                                                        {% assign month = months[nextMondayMonthIndex] %}
+
+                                                                                                                        {% if b2b_product == true %}
+                                                                                                                            {% assign message = "Ships with white glove installation the week of " | append: month  | append: “ “ | append: nextMondayDay | append: nth    %}
+                                                                                                                        {% else %}
+                                                                                                                            {% assign message = "Ships for free the week of " | append: month  | append: “ “ | append: nextMondayDay | append: nth  %}
+                                                                                                                        {% endif %}
+                                                                                                                    {% endif %}
+                                                                                                                {% endunless %}
+
+                                                        <br/>
+                                                        <p>Shipping Timeline:
+                                                         <br/>
+                                                          <span style="color:#008000;">{{ message }}</span>
+                                                        </p>
+                                                                                                            </td>
+                                                                                                            <td style="vertical-align: middle" class="price">
+                                                                                                                {{ line.line_price | money }}
+                                                                                                            </td>
+                                                                                                        </tr>
+                                                                                                    </table>
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                        </table>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            {% endfor %}
+                                                                        </table>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="subtotals">
+                                                                        <table style="width: 100%;border-bottom: 1px solid;padding-bottom: 10px;">
+                                                                            <tr class="subtotal">
+                                                                                <td>Subtotal</td>
+                                                                                <td class="price">{{ subtotal_price | money }}</td>
+                                                                            </tr>
+                                                                            {% if discounts %}
+                                                                            <tr>
+                                                                                <td>Discount</td>
+                                                                                <td class="price">{{ discounts_savings | money }}</td>
+                                                                            </tr>
+                                                                            {% endif %}
+                                                                            <tr>
+                                                                                <td>Shipping</td>
+                                                                                <td class="price">{{ shipping_price | money }}</td>
+                                                                            </tr>
+                                                                            {% if tax_price > 0%}
+                                                                            <tr>
+                                                                                <td>Sales Tax</td>
+                                                                                <td class="price">{{ tax_price | money  }}</td>
+                                                                            </tr>
+                                                                            {% endif %}
+                                                                        </table>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="total">
+                                                                        <table style="width: 100%;">
+                                                                            <tr class="total">
+                                                                                <td>Total</td>
+                                                                                <td class="price">{{ total_price | money }}</td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="customer-info">
+                                                        <td>
+                                                            <h2 style="font-size: 22px; margin-bottom: 0; border-top: 0; border-bottom: 0px solid {{shop.email_accent_color}}; margin-top: 40px; margin-bottom: 20px;">Customer Info</h2>
+
+                                                            <p style="font-size: 15px">
+                                                                <b>Order {{name}}</b><br />
+                                                                {{created_at | date: "%d %B, %Y"}}
+                                                            </p>
+
+                                                            <table cellpadding="0" cellspacing="0" class="info-details" style="width: 100%; font-size: 13px">
+                                                                <tr>
+                                                                    <td class="cell" style="width: 46%;">
+                                                                        <h3>Billing Address</h3>
+                                                                        {% if billing_address %}
+                                                                        <p>
+                                                                            {{ billing_address.name }}
+                                                                            <br/>
+                                                                            {{ billing_address.address1 }}
+                                                                            {% if billing_address.address2 %}
+                                                                            <br/>{{ billing_address.address2 }}
+                                                                            {% endif %}
+                                                                            <br/>{{ billing_address.city }}, {{ billing_address.province }} {{ billing_address.zip }}
+                                                                            <br/>{{ billing_address.country }}
+                                                                        </p>
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td class="cell" style="width: 8%;">
+                                                                    </td>
+                                                                    <td class="cell" style="width: 46%;">
+                                                                        <h3>Shipping Address</h3>
+                                                                        {% if requires_shipping and shipping_address %}
+                                                                        <p>
+                                                                            {{ shipping_address.name }}
+                                                                            <br/>
+                                                                            {{ shipping_address.address1 }}
+                                                                            {% if shipping_address.address2 %}
+                                                                            <br/>{{ shipping_address.address2 }}
+                                                                            {% endif %}
+                                                                            <br/>{{ shipping_address.city }}, {{ shipping_address.province }} {{ shipping_address.zip }}
+                                                                            <br/>{{ shipping_address.country }}
+                                                                        </p>
+                                                                        {% endif %}
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    {% if requires_shipping and shipping_address %}
+                                                                    <td class="cell">
+                                                                        <h3>Shipping method</h3>
+                                                                        <p>{{ shipping_method.title }}</p>
+                                                                    </td>
+                                                                    <td></td>
+                                                                    {% endif %}
+                                                                    {% assign transaction_count = transactions | size %}
+                                                                    {% if transaction_count > 0 %}
+                                                                    <td class="cell">
+                                                                        <h3>Payment method</h3>
+                                                                        {% for transaction in transactions %}
+                                                                        {% if transaction.status == "success" or transaction.status == "pending" %}
+                                                                        {% if transaction.kind == "authorization" or transaction.kind == "sale" %}
+                                                                        <p>
+                                                                            {% if transaction.payment_details.credit_card_company %}
+                                                                            {{ transaction.payment_details.credit_card_company }}
+                                                                            <span>Ending in {{ transaction.payment_details.credit_card_last_four_digits }} — <strong>{{ total_price | money }}</strong></span>
+                                                                            {% else %}
+                                                                            {{ transaction.gateway | replace: "_", " " | capitalize }} — <strong>{{ transaction.amount | money }}</strong>
+                                                                            {% endif %}
+                                                                        </p>
+                                                                        {% endif %}
+                                                                        {% endif %}
+                                                                        {% endfor %}
+                                                                    </td>
+                                                                    {% endif %}
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="padding-top: 50px;">
+                                                            <center>
+                                                                <table style="width: 100%;" border="0" cellpadding="0" cellspacing="0">
+                                                                    <tr>
+                                                                        <td style="background-color: {{shop.email_accent_color}}; width: 100%; padding: 20px 20px; vertical-align: middle; text-align: center; font-size: 15px;">
+                                                                            <a class="button" href="{{ shop.url }}" target="_blank" style="color: #fff; text-decoration: none;">
+                                                                                RETURN TO THE ONLINE SHOP
+                                                                            </a>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </center>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding-top: 20px; padding-bottom: 20px; text-align: center; font-size: 14px; color:#fff; background-color: {{shop.email_accent_color}};">
+                                                <p>
+                                                    Please contact Customer Service at <a href="mailto:hello@branchfurniture.com" class="link" style="color:#fff">hello@branchfurniture.com</a><br />
+                                                    with any questions.
+                                                </p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding-bottom: 25px;color:#fff; background-color: {{shop.email_accent_color}};">
+                                                <center>
+                                                    <table>
+                                                        <tr>
+                                                            <td style="padding-right: 15px;">
+                                                                <a target="_blank" href="https://www.facebook.com/branchofficefurniture/">
+                                                                    <img width="25" alt="Follow us on Facebook" src="https://cdn.shopify.com/s/files/1/0124/5662/4187/files/notification-icons_facebook.png?18160" />
+                                                                </a>
+                                                            </td>
+                                                            <td style="padding-right: 15px;">
+                                                                <a target="_blank" href="https://twitter.com/officebybranch">
+                                                                    <img width="25" alt="Follow us on Twitter" src="https://cdn.shopify.com/s/files/1/0124/5662/4187/files/notification-icons_twitter.png?18160" />
+                                                                </a>
+                                                            </td>
+                                                            <td style="padding-right: 0;">
+                                                                <a target="_blank" href="https://www.instagram.com/branchfurniture/">
+                                                                    <img width="25" alt="Follow us on Instagram" src="https://cdn.shopify.com/s/files/1/0124/5662/4187/files/notification-icons_instagram.png?18160" />
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </center>
+                                            </td>
+                                        </tr>                                       
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </center>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>
